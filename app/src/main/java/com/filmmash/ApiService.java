@@ -57,4 +57,10 @@ public class ApiService {
             callback.onResponse(jsonResponse);
         });
     }
+
+    public void getAllRatings(JsonResponseCallback callback){
+        getJsonResponse("/get_all_ratings", jsonResponse -> {
+           callback.onResponse((jsonResponse));
+        });
+    }
 }

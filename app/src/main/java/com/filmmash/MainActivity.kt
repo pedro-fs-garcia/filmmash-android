@@ -68,16 +68,12 @@ fun NavigationEngine(apiService:ApiService = ApiService()){
     val navController = rememberNavController()
     val pages = Page()
     val arenaInfo = remember { mutableStateOf<String?>(null) }
+    val ratingInfo = remember { mutableStateOf<String?>(null) }
     NavHost(navController = navController, startDestination = "home"){
         composable ("home"){
             pages.Home(navController)
         }
-        composable ("ratings") {
-            pages.Ratings(navController)
-        }
         composable("battle"){
-//            val arena = apiService.getNewArena()
-//            pages.Battle(arena, navController)
             LaunchedEffect(Unit) {
                 apiService.getNewArena { arena ->
                     arenaInfo.value = arena
@@ -87,6 +83,18 @@ fun NavigationEngine(apiService:ApiService = ApiService()){
                 val arena = Arena()
                 arena.jsonToArena(arenaInfo)
                 pages.Battle(arena, navController)
+            }
+        }
+        composable("ratings"){
+            LaunchedEffect(Unit) {
+                apiService.getAllRatings { ratings ->
+                    ratingInfo.value = ratings
+                }
+            }
+            ratingInfo.value?.let { ratingInfo ->
+                val ratingList = RatingList()
+                ratingList.jsonToRatingList(ratingInfo)
+                pages.Ratings(ratingList, navController)
             }
         }
     }

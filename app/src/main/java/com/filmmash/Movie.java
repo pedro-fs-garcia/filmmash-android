@@ -22,6 +22,21 @@ public class Movie {
         this.poster = poster;
     }
 
+    public void setAttribute(String key, Object value){
+        if (key.equals("name")){
+            this.setName(String.valueOf(value));
+        }else if (key.equals("director")){
+            this.setDirector(String.valueOf(value));
+        }else if (key.equals("score")) {
+            String scoreString = String.valueOf(value);
+            double scoreDouble = Double.parseDouble(scoreString);
+            int scoreInt = (int) scoreDouble;
+            this.setScore(scoreInt);
+        }else if (key.equals("poster")){
+            this.setPoster(String.valueOf(value));
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -52,5 +67,9 @@ public class Movie {
 
     public void setPoster(String poster) {
         this.poster = poster;
+    }
+
+    public void setFilm_id(int id){
+        this.film_id = id;
     }
 }

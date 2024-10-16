@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -196,8 +198,9 @@ class Page {
     }
 
     @Composable
-    public fun Ratings(navController: NavController, modifier: Modifier = Modifier){
-        Column(
+    public fun Ratings(ratingList: RatingList, navController: NavController, modifier: Modifier = Modifier){
+        val listOfMovies = ratingList.movieList
+        LazyColumn(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
@@ -205,7 +208,9 @@ class Page {
                 .padding(horizontal = 16.dp)
                 .background(color = MaterialTheme.colorScheme.background)
         ){
-            MovieCard(Movie())
+            items(listOfMovies) { movie ->
+                MovieCard(movie)
+            }
         }
     }
 
@@ -218,9 +223,9 @@ class Page {
                 .background(color = Color.LightGray)
                 .padding(15.dp)
         ){
-            Image(
-                painter = painterResource(R.drawable.ic_launcher_background),
-                contentDescription = "",
+            AsyncImage(
+                model = movie.poster,
+                contentDescription = movie.name,
                 contentScale = ContentScale.FillHeight,
                 modifier = modifier.fillMaxHeight()
             )
@@ -230,17 +235,18 @@ class Page {
                 modifier = modifier.fillMaxHeight()
             ){
                 Text (
-                    text = "Título do filme",
+                    text = movie.name,
                     fontSize = 20.sp
                 )
                 Text (
-                    text = "Diretor"
+                    text = movie.director
                 )
                 Text (
-                    text = "Elo Score"
+                    text = movie.score.toString()
                 )
             }
         }
+        Spacer(modifier = modifier.height(16.dp))
     }
 
 
