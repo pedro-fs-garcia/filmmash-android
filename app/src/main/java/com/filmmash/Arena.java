@@ -31,6 +31,14 @@ public class Arena {
         }
     }
 
+    public String buildJsonWinner(){
+        String jsonWinner = "{\"movie1\": " +
+                this.movie1.getFilm_id() + ", \"movie2\": " +
+                this.movie2.getFilm_id() + ", \"winner\": " +
+                this.winner + "}";
+        return jsonWinner;
+    }
+
     public ArrayList<Movie> getMoviesList(){
         ArrayList<Movie> list = new ArrayList<>();
         list.add(this.movie1);

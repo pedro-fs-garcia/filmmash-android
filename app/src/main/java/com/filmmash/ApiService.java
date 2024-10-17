@@ -5,6 +5,7 @@ import android.content.Context;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +19,10 @@ public class ApiService {
 
     public interface JsonResponseCallback {
         void onResponse(String jsonResponse);
+    }
+
+    public interface JsonWinnerCallback{
+        void onResponse(String jsonWinner);
     }
 
     public void getJsonResponse(String endPoint, JsonResponseCallback callback) {
@@ -61,6 +66,54 @@ public class ApiService {
     public void getAllRatings(JsonResponseCallback callback){
         getJsonResponse("/get_all_ratings", jsonResponse -> {
            callback.onResponse((jsonResponse));
+        });
+    }
+
+    public void postJsonWinner(String jsonWinner, String endPoint, JsonWinnerCallback callback){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            String jsonResponse = "";
+            try {
+                URL url = new URL(BASE_URL + endPoint);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setDoOutput((true));
+
+                // Enviar a requisição POST com os dados
+                try(OutputStream os = connection.getOutputStream()) {
+                    byte[] input = jsonWinner.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                try(BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine = null;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+                    jsonResponse = response.toString();
+                    System.out.println(jsonResponse);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Executa o callback passando a resposta JSON
+            callback.onResponse(jsonResponse);
+        });
+    }
+
+    public void postNewWinner(String jsonWinner){
+        JsonWinnerCallback callback = new JsonWinnerCallback() {
+            @Override
+            public void onResponse(String serverResponse) {
+                System.out.println("Resposta do servidor" + serverResponse);
+            }
+        };
+        postJsonWinner(jsonWinner, "/post_winner", serverResponse -> {
+            callback.onResponse(serverResponse);
         });
     }
 }

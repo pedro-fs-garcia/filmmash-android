@@ -144,7 +144,9 @@ class Page {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier
                         .clickable(onClick = {
-                            arena.winner = 1
+                            arena.winner = arena.movie1.film_id
+                            val jsonWinner = arena.buildJsonWinner()
+                            ApiService().postNewWinner(jsonWinner);
                             navController.navigate("battle")
                         })
                         .weight(1f)
@@ -168,7 +170,9 @@ class Page {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = modifier
                         .clickable(onClick = {
-                            arena.winner = 2
+                            arena.winner = arena.movie2.film_id
+                            val jsonWinner = arena.buildJsonWinner()
+                            ApiService().postNewWinner(jsonWinner);
                             navController.navigate("battle")
                         })
                         .weight(1f)

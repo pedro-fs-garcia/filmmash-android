@@ -72,4 +72,8 @@ public class Movie {
     public void setFilm_id(int id){
         this.film_id = id;
     }
+
+    public int getFilm_id(){
+        return this.film_id;
+    }
 }
