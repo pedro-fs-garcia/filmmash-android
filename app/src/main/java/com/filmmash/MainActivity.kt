@@ -32,34 +32,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FilmmashTheme {
+                val layoutDirection = LocalLayoutDirection.current
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(layoutDirection),
+                            end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(layoutDirection),
+                        )
+                        .statusBarsPadding()
                 ){
                     NavigationEngine()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun BuildPage(modifier: Modifier = Modifier){
-    val layoutDirection = LocalLayoutDirection.current
-    Surface(
-        color = MaterialTheme.colorScheme.background,
-        modifier = modifier
-            .fillMaxSize()
-            .padding(
-                start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(layoutDirection),
-                end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(layoutDirection),
-            )
-            .statusBarsPadding()
-    ){
-        val navController = rememberNavController()
-        val pages = Page()
-        pages.Home(navController)
-
     }
 }
 
@@ -73,6 +60,14 @@ fun NavigationEngine(apiService:ApiService = ApiService()){
         composable ("home"){
             pages.Home(navController)
         }
+        composable("about"){
+            pages.About(navController)
+        }
+
+        composable("elo"){
+            pages.EloScore()
+        }
+
         composable("battle"){
             LaunchedEffect(Unit) {
                 apiService.getNewArena { arena ->

@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 
 public class ApiService {
 
-    private static final String BASE_URL = "http://10.0.2.2:5000";
+    private static final String BASE_URL = "http://34.202.101.207:5000";
 
     public interface JsonResponseCallback {
         void onResponse(String jsonResponse);

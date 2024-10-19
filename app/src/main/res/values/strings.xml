@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Filmmash</string>
+    <string name="github_repo">https://github.com/pedro-fs-garcia/filmmash-android</string>
+    <string name="filmmash">FilmMash</string>
+    <string name="about_1">Inspired by the Elo ranking concept, similar to Facemash from the movie The Social Network, FilmMash allows the rantings of the films to be more implicit than choosing a number to represent the film\'s quality.</string>
+    <string name="about_2">In Filmmash, users are presented with pairs of films and have the opportunity to choose their favorite. Based on the choices made, we calculate the Elo rating of each film, reflecting its popularity among users. The more a film is chosen, the higher its rating will be. The Elo system ensures that lesser-known films have a chance to compete with the big hits, allowing you to discover new gems and hidden classics.</string>
+    <string name="see_more_details_on_the_elo_rating_system">See more details on the Elo rating system.</string>
 </resources>
