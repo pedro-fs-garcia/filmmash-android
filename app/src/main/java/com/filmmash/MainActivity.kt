@@ -35,15 +35,20 @@ class MainActivity : ComponentActivity() {
                 val layoutDirection = LocalLayoutDirection.current
                 Surface(
                     color = MaterialTheme.colorScheme.background,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(layoutDirection),
-                            end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(layoutDirection),
-                        )
-                        .statusBarsPadding()
+                    modifier = Modifier.fillMaxSize()
                 ){
-                    NavigationEngine()
+                    Surface(
+                        color = MaterialTheme.colorScheme.background,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(layoutDirection),
+                                end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(layoutDirection),
+                            )
+                            .statusBarsPadding()
+                    ){
+                        NavigationEngine()
+                    }
                 }
             }
         }
@@ -62,6 +67,10 @@ fun NavigationEngine(apiService:ApiService = ApiService()){
         }
         composable("about"){
             pages.About(navController)
+        }
+
+        composable("aboutAuthor"){
+            pages.AboutAuthor()
         }
 
         composable("elo"){

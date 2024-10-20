@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -63,8 +66,12 @@ class Page {
             modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
-                .background(color = MaterialTheme.colorScheme.background)
         ) {
+            Image(
+                painter = painterResource(R.drawable.leonardo_phoenix_design_a_minimalist_modern_logo_for_a_mobile_2),
+                contentDescription = "logo",
+                modifier = modifier
+            )
             Button(
                 onClick = {navController.navigate("battle")},
                 modifier = modifier
@@ -72,7 +79,7 @@ class Page {
                     .height(50.dp)
             ){
                 Text(
-                    text = "Choose the best movie",
+                    text = "Get started",
 //                    fontFamily = FontFamily(Font(R.font.courier_prime))
                 )
             }
@@ -87,6 +94,17 @@ class Page {
 //                    fontFamily = FontFamily(Font(R.font.courier_prime))
                 )
             }
+            Button(
+                onClick = {navController.navigate("about")},
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ){
+                Text(
+                    text = "about us",
+//                    fontFamily = FontFamily(Font(R.font.courier_prime))
+                )
+            }
         }
     }
 
@@ -98,7 +116,6 @@ class Page {
                 modifier = modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .background(color = MaterialTheme.colorScheme.background)
             ) {
                 Column() {
                     Text(
@@ -240,7 +257,6 @@ class Page {
                 modifier = modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
-                    .background(color = MaterialTheme.colorScheme.background)
             ) {
                 items(listOfMovies) { movie ->
                     MovieCard(movie)
@@ -258,7 +274,6 @@ class Page {
             modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
-                .background(color = MaterialTheme.colorScheme.background)
         ){
             Text(
                 text = stringResource(R.string.filmmash),
@@ -287,12 +302,9 @@ class Page {
                 Text(text = "Contribute on github")
             }
             Button(
-                onClick = {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.github_repo)))
-                    context.startActivity(intent)
-                }
+                onClick = {navController.navigate("aboutAuthor")}
             ){
-                Text(text = "Make a bitcoin donation")
+                Text(text = "About the author")
             }
         }
     }
@@ -410,6 +422,26 @@ class Page {
         }
     }
 
+    @Composable
+    public fun AboutAuthor(modifier: Modifier = Modifier){
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Image(
+                painter = painterResource(R.drawable.profile),
+                contentDescription = "author"
+            )
+            Spacer(modifier = modifier.height(16.dp))
+            Text(
+                text = "Pedro Garcia",
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp
+            )
+            Text(
+                text = ""
+            )
+        }
+    }
 
     @Composable
     private fun Footer(navController: NavController, modifier : Modifier = Modifier){
