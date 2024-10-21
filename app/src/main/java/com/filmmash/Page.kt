@@ -45,6 +45,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -80,7 +82,8 @@ class Page {
             ){
                 Text(
                     text = "Get started",
-//                    fontFamily = FontFamily(Font(R.font.courier_prime))
+                    fontFamily = FontFamily(Font(R.font.courier_prime)),
+                    fontWeight = FontWeight.Bold
                 )
             }
             Button(
@@ -91,7 +94,8 @@ class Page {
             ){
                 Text(
                     text = "Check ratings",
-//                    fontFamily = FontFamily(Font(R.font.courier_prime))
+                    fontFamily = FontFamily(Font(R.font.courier_prime)),
+                    fontWeight = FontWeight.Bold
                 )
             }
             Button(
@@ -102,7 +106,8 @@ class Page {
             ){
                 Text(
                     text = "about us",
-//                    fontFamily = FontFamily(Font(R.font.courier_prime))
+                    fontFamily = FontFamily(Font(R.font.courier_prime)),
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -119,11 +124,13 @@ class Page {
             ) {
                 Column() {
                     Text(
-                        text = "Yea, it's on..."
+                        text = "Yea, it's on...",
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
                     )
                     Text(
                         text = "...I like the idea of comparing two films together. It gives the whole thing a very \"Turing\" feel since people's ratings of the films will be more implicit than choosing a number to represent each film's quality like they do on IMDB.",
-                        textAlign = TextAlign.Justify
+                        textAlign = TextAlign.Justify,
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
                     )
                 }
 
@@ -136,11 +143,15 @@ class Page {
                 ) {
                     Text(
                         text = "About us",
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        fontWeight = FontWeight.Bold,
                         modifier = modifier.clickable { navController.navigate("about") }
                     )
 
                     Text(
                         text = "See all Ratings",
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        fontWeight = FontWeight.Bold,
                         modifier = modifier.clickable { navController.navigate("ratings") }
                     )
                 }
@@ -162,13 +173,16 @@ class Page {
                         .background(color = Color.DarkGray)
                 ) {
                     Text(
-                        text = "FILMMASH",
-                        color = Color.White
+                        text = "FilmMash",
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        fontWeight = FontWeight.Bold
                     )
                 }
                 Text(
                     text = "Which is better? Click to choose...",
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(Font(R.font.courier_prime))
                 )
             }
             Row(
@@ -197,7 +211,8 @@ class Page {
                             .width(173.dp)
                     )
                     Text(
-                        text = arena.movie1.name
+                        text = arena.movie1.name,
+                        fontFamily = FontFamily(Font(R.font.courier_prime))
                     )
                 }
                 Text(
@@ -223,7 +238,8 @@ class Page {
                             .width(173.dp)
                     )
                     Text(
-                        text = arena.movie2.name
+                        text = arena.movie2.name,
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
                     )
                 }
             }
@@ -231,6 +247,7 @@ class Page {
             Text(
                 text = "Reload",
                 textAlign = TextAlign.Center,
+                fontFamily = FontFamily(Font(R.font.courier_prime)),
                 modifier = modifier
                     .fillMaxWidth()
                     .clickable { navController.navigate("battle") }
@@ -246,6 +263,7 @@ class Page {
         ) {
             Text(
                 text = "Movies listed by rating",
+                fontFamily = FontFamily(Font(R.font.courier_prime)),
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             )
@@ -277,6 +295,7 @@ class Page {
         ){
             Text(
                 text = stringResource(R.string.filmmash),
+                fontFamily = FontFamily(Font(R.font.courier_prime)),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
             )
