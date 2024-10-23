@@ -10,39 +10,36 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -57,11 +54,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.filmmash.ui.theme.FilmmashTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class Page {
 
     @Composable
-    public fun Home(navController: NavController, modifier: Modifier = Modifier){
+    fun Home(navController: NavController, modifier: Modifier = Modifier){
         Column (
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -114,7 +113,7 @@ class Page {
     }
 
     @Composable
-    public fun Battle(arena: Arena, navController:NavController, modifier:Modifier = Modifier){
+    fun Battle(arena: Arena, navController:NavController, modifier:Modifier = Modifier){
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -122,7 +121,7 @@ class Page {
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                Column() {
+                Column {
                     Text(
                         text = "Yea, it's on...",
                         fontFamily = FontFamily(Font(R.font.courier_prime)),
@@ -197,7 +196,7 @@ class Page {
                         .clickable(onClick = {
                             arena.winner = arena.movie1.film_id
                             val jsonWinner = arena.buildJsonWinner()
-                            ApiService().postNewWinner(jsonWinner);
+                            ApiService().postNewWinner(jsonWinner)
                             navController.navigate("battle")
                         })
                         .weight(1f)
@@ -224,7 +223,7 @@ class Page {
                         .clickable(onClick = {
                             arena.winner = arena.movie2.film_id
                             val jsonWinner = arena.buildJsonWinner()
-                            ApiService().postNewWinner(jsonWinner);
+                            ApiService().postNewWinner(jsonWinner)
                             navController.navigate("battle")
                         })
                         .weight(1f)
@@ -256,7 +255,7 @@ class Page {
     }
 
     @Composable
-    public fun Ratings(ratingList: RatingList, navController: NavController, modifier: Modifier = Modifier){
+    fun Ratings(ratingList: RatingList, navController: NavController, modifier: Modifier = Modifier){
         val listOfMovies = ratingList.movieList
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -284,7 +283,7 @@ class Page {
     }
 
     @Composable
-    public fun About(navController: NavController, modifier: Modifier = Modifier){
+    fun About(navController: NavController, modifier: Modifier = Modifier){
         val context = LocalContext.current
         Column(
             verticalArrangement = Arrangement.SpaceEvenly,
@@ -329,10 +328,12 @@ class Page {
     }
 
     @Composable
-    fun EloScore() {
+    fun EloScore(navController: NavController) {
         val scrollState = rememberScrollState()
+        Header(navController)
         Column(modifier = Modifier
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
+            .padding(top = 50.dp)
             .verticalScroll(scrollState)
         ) {
             Text(
@@ -442,7 +443,7 @@ class Page {
     }
 
     @Composable
-    public fun AboutAuthor(modifier: Modifier = Modifier){
+    fun AboutAuthor(modifier: Modifier = Modifier){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
@@ -523,12 +524,105 @@ class Page {
         Spacer(modifier = modifier.height(16.dp))
     }
 
+    @Composable
+    private fun Header(navController:NavController, modifier: Modifier = Modifier){
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val scope = rememberCoroutineScope()
+        ModalNavigationDrawer(
+            modifier = modifier
+                .fillMaxHeight(),
+            drawerContent = {
+                DrawerContent(drawerState, scope, navController)
+            },
+            scrimColor = Color.LightGray.copy(alpha = 0f),
+            drawerState = drawerState,
+            content = {
+                Surface(
+                    modifier = modifier
+                        .height(50.dp),
+                    color = MaterialTheme.colorScheme.background
+                ){
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(end = 16.dp)
+                ){
+                    IconButton(
+                        onClick = { scope.launch{drawerState.open()} },
+                    ) {
+                        Icon(Icons.Filled.Menu, contentDescription = "description", modifier = modifier.fillMaxSize().padding(0.dp).border(width = 0.dp, shape = RectangleShape, color = Color.Transparent))
+                    }
+                    Text(
+                        text = "FilmMash",
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 32.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = modifier.clickable { navController.navigate("battle") }
+                    )
+                }
+            }
+            }
+        )
+    }
+
+    @Composable
+    fun DrawerContent(drawerState: DrawerState, scope: CoroutineScope, navController: NavController, modifier:Modifier = Modifier) {
+        Column(
+            modifier = modifier
+                .background(shape = RectangleShape, color=MaterialTheme.colorScheme.onBackground)
+                .fillMaxHeight()
+                .width(150.dp)
+        ) {
+            IconButton(
+                onClick = {scope.launch { drawerState.close() }},
+            ) {
+                Icon(Icons.Filled.Menu, tint = Color.White, contentDescription = "menu", modifier = modifier.fillMaxSize().padding(0.dp))
+            }
+            Text(
+                text = "Home",
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navController.navigate("home") }
+                    .padding(16.dp)
+            )
+            Text(
+                text = "Filmmash",
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clickable { navController.navigate("battle") }
+            )
+            Text(
+                text = "Ratings",
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable (onClick = { navController.navigate("ratings") })
+                    .padding(16.dp)
+            )
+            Text(
+                text = "About us",
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { navController.navigate("about") }
+                    .padding(16.dp)
+            )
+        }
+    }
+
     @Preview(showBackground = true)
     @Composable
     fun GreetingPreview(){
         FilmmashTheme{
             val navController = rememberNavController()
-            EloScore()
+            EloScore(navController)
         //Ratings(navController)
         }
     }

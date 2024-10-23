@@ -74,7 +74,7 @@ fun NavigationEngine(apiService:ApiService = ApiService()){
         }
 
         composable("elo"){
-            pages.EloScore()
+            pages.EloScore(navController)
         }
 
         composable("battle"){
