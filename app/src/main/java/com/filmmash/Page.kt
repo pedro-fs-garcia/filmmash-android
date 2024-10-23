@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,16 +23,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -255,7 +249,7 @@ class Page {
     }
 
     @Composable
-    fun Ratings(ratingList: RatingList, navController: NavController, modifier: Modifier = Modifier){
+    fun Ratings(ratingList: RatingList, modifier: Modifier = Modifier){
         val listOfMovies = ratingList.movieList
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -267,7 +261,6 @@ class Page {
                 fontSize = 24.sp
             )
             Spacer(modifier = modifier.height(10.dp))
-            Footer(navController)
             LazyColumn(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -328,9 +321,8 @@ class Page {
     }
 
     @Composable
-    fun EloScore(navController: NavController) {
+    fun EloScore() {
         val scrollState = rememberScrollState()
-        Header(navController)
         Column(modifier = Modifier
             .padding(horizontal = 16.dp)
             .padding(top = 50.dp)
@@ -464,29 +456,6 @@ class Page {
     }
 
     @Composable
-    private fun Footer(navController: NavController, modifier : Modifier = Modifier){
-        Column(
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "Go to filmmash",
-                modifier = modifier.clickable { navController.navigate("battle") }
-            )
-
-            Spacer(modifier = modifier.height(10.dp))
-
-            Text(
-                text = "How the ratings are calculated",
-                modifier = modifier.clickable { navController.navigate("ratings") }
-            )
-
-        }
-    }
-
-    @Composable
     private fun MovieCard(movie: Movie, modifier:Modifier = Modifier){
         Row (
             modifier = modifier
@@ -525,51 +494,6 @@ class Page {
     }
 
     @Composable
-    private fun Header(navController:NavController, modifier: Modifier = Modifier){
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-        ModalNavigationDrawer(
-            modifier = modifier
-                .fillMaxHeight(),
-            drawerContent = {
-                DrawerContent(drawerState, scope, navController)
-            },
-            scrimColor = Color.LightGray.copy(alpha = 0f),
-            drawerState = drawerState,
-            content = {
-                Surface(
-                    modifier = modifier
-                        .height(50.dp),
-                    color = MaterialTheme.colorScheme.background
-                ){
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .padding(end = 16.dp)
-                ){
-                    IconButton(
-                        onClick = { scope.launch{drawerState.open()} },
-                    ) {
-                        Icon(Icons.Filled.Menu, contentDescription = "description", modifier = modifier.fillMaxSize().padding(0.dp).border(width = 0.dp, shape = RectangleShape, color = Color.Transparent))
-                    }
-                    Text(
-                        text = "FilmMash",
-                        fontFamily = FontFamily(Font(R.font.courier_prime)),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = modifier.clickable { navController.navigate("battle") }
-                    )
-                }
-            }
-            }
-        )
-    }
-
-    @Composable
     fun DrawerContent(drawerState: DrawerState, scope: CoroutineScope, navController: NavController, modifier:Modifier = Modifier) {
         Column(
             modifier = modifier
@@ -587,8 +511,11 @@ class Page {
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { navController.navigate("home") }
                     .padding(16.dp)
+                    .clickable {
+                        navController.navigate("home")
+                        scope.launch { drawerState.close() }
+                    }
             )
             Text(
                 text = "Filmmash",
@@ -596,23 +523,33 @@ class Page {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .clickable { navController.navigate("battle") }
+                    .clickable {
+                        navController.navigate("battle")
+                        scope.launch { drawerState.close() }
+                    }
             )
             Text(
                 text = "Ratings",
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable (onClick = { navController.navigate("ratings") })
                     .padding(16.dp)
+                    .clickable {
+                        navController.navigate("ratings")
+                        scope.launch{drawerState.close()}
+                    }
+
             )
             Text(
                 text = "About us",
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { navController.navigate("about") }
                     .padding(16.dp)
+                    .clickable {
+                        navController.navigate("about")
+                        scope.launch { drawerState.close() }
+                    }
             )
         }
     }
@@ -622,7 +559,7 @@ class Page {
     fun GreetingPreview(){
         FilmmashTheme{
             val navController = rememberNavController()
-            EloScore(navController)
+            EloScore()
         //Ratings(navController)
         }
     }
