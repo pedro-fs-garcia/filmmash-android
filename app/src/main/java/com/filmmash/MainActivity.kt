@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,7 +47,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -62,71 +60,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FilmmashTheme {
-                val layoutDirection = LocalLayoutDirection.current
-                Surface(
-                    color = MaterialTheme.colorScheme.background,
-                    modifier = Modifier.fillMaxSize()
-                ){
-                    Surface(
-                        color = MaterialTheme.colorScheme.background,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(
-                                start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(layoutDirection),
-                                end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(layoutDirection),
-                            )
-                            .statusBarsPadding()
-                    ){
-                        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-                        val scope = rememberCoroutineScope()
-                        val modifier = Modifier
-                        val navController = rememberNavController()
-                        val pages = Page()
-                        ModalNavigationDrawer(
-                            modifier = modifier
-                                .fillMaxHeight(),
-                            drawerContent = {
-                                pages.DrawerContent(drawerState, scope, navController)
-                            },
-                            scrimColor = Color.LightGray.copy(alpha = 0f),
-                            drawerState = drawerState,
-                            content = {
-                                Surface(
-                                    modifier = modifier
-                                        .fillMaxSize(),
-                                    color = MaterialTheme.colorScheme.background
-                                ){
-                                    Column(){
-                                        Row(
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = modifier
-                                                .fillMaxWidth()
-                                                .height(50.dp)
-                                                .padding(end = 16.dp)
-                                        ){
-                                            IconButton(
-                                                onClick = { scope.launch{drawerState.open()} },
-                                            ) {
-                                                Icon(Icons.Filled.Menu, contentDescription = "description", modifier = modifier.fillMaxSize().padding(0.dp).border(width = 0.dp, shape = RectangleShape, color = Color.Transparent))
-                                            }
-                                            Text(
-                                                text = "FilmMash",
-                                                fontFamily = FontFamily(Font(R.font.courier_prime)),
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 32.sp,
-                                                textAlign = TextAlign.Center,
-                                                modifier = modifier.clickable { navController.navigate("battle") }
-                                            )
-                                        }
-                                        NavigationEngine(navController = navController)
-
-                                    }
-                                }
-                            }
-                        )
-                    }
-                }
+                PageBuilder()
             }
         }
     }
@@ -138,7 +72,7 @@ fun NavigationEngine(navController: NavHostController, apiService:ApiService = A
     val pages = Page()
     val arenaInfo = remember { mutableStateOf<String?>(null) }
     val ratingInfo = remember { mutableStateOf<String?>(null) }
-    NavHost(navController = navController, startDestination = "home"){
+    NavHost(navController = navController, startDestination = "battle"){
         composable ("home"){
             pages.Home(navController)
         }
@@ -181,11 +115,79 @@ fun NavigationEngine(navController: NavHostController, apiService:ApiService = A
     }
 }
 
+@Composable
+fun PageBuilder(){
+    val layoutDirection = LocalLayoutDirection.current
+    Surface(
+        color = MaterialTheme.colorScheme.background,
+        modifier = Modifier.fillMaxSize()
+    ){
+        Surface(
+            color = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(layoutDirection),
+                    end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(layoutDirection),
+                )
+                .statusBarsPadding()
+        ){
+            val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+            val scope = rememberCoroutineScope()
+            val modifier = Modifier
+            val navController = rememberNavController()
+            val pages = Page()
+            ModalNavigationDrawer(
+                modifier = modifier
+                    .fillMaxHeight(),
+                drawerContent = {
+                    pages.DrawerContent(drawerState, scope, navController)
+                },
+                scrimColor = Color.LightGray.copy(alpha = 0f),
+                drawerState = drawerState,
+                content = {
+                    Surface(
+                        modifier = modifier
+                            .fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ){
+                        Column{
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .padding(end = 16.dp)
+                            ){
+                                IconButton(
+                                    onClick = { scope.launch{drawerState.open()} },
+                                ) {
+                                    Icon(Icons.Filled.Menu, contentDescription = "description", modifier = modifier.fillMaxSize().padding(0.dp).border(width = 0.dp, shape = RectangleShape, color = Color.Transparent))
+                                }
+                                Text(
+                                    text = "FilmMash",
+                                    fontFamily = FontFamily(Font(R.font.courier_prime)),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 32.sp,
+                                    textAlign = TextAlign.Center,
+                                    modifier = modifier.clickable { navController.navigate("battle") }
+                                )
+                            }
+                            NavigationEngine(navController = navController)
+
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview(){
     FilmmashTheme{
-        val navController = rememberNavController()
-        NavigationEngine(navController)
+        PageBuilder()
     }
 }

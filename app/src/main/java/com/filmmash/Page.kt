@@ -45,7 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.filmmash.ui.theme.FilmmashTheme
 import kotlinx.coroutines.CoroutineScope
@@ -499,7 +498,7 @@ class Page {
             modifier = modifier
                 .background(shape = RectangleShape, color=MaterialTheme.colorScheme.onBackground)
                 .fillMaxHeight()
-                .width(150.dp)
+                .width(200.dp)
         ) {
             IconButton(
                 onClick = {scope.launch { drawerState.close() }},
@@ -558,9 +557,7 @@ class Page {
     @Composable
     fun GreetingPreview(){
         FilmmashTheme{
-            val navController = rememberNavController()
             EloScore()
-        //Ratings(navController)
         }
     }
 }
