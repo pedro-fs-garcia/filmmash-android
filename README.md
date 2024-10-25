@@ -29,8 +29,7 @@ Since the **Filmmash** app is being installed directly from an APK and not from 
 Follow the steps below to install the **Filmmash** app:
 
 1. **Download the APK:**
-   - Download the APK file directly from the GitHub repository (in the releases section), or click [here](https://github.com/pedro-fs-garcia/filmmash-android/releases) to access the latest version of the APK.
-   - APK file name: `filmmash_v0.0.0-alpha.apk`.
+   - Download the APK file directly from the latest release on the GitHub repository (in the releases section), or click [here](https://github.com/pedro-fs-garcia/filmmash-android/releases) to access the latest version of the APK.
 
 2. **Install the APK:**
    - Open the APK file you just downloaded.
