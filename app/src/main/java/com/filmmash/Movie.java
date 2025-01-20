@@ -13,7 +13,7 @@ public class Movie {
         this.director = "director";
         this.year = 0;
         this.score = 1400;
-        this.poster = "https://gamestation.com.br/wp-content/themes/game-station/images/image-not-found.png";
+        this.poster = null; //"https://gamestation.com.br/wp-content/themes/game-station/images/image-not-found.png";
     }
 
     public Movie(int film_id, String name, String director, int year, int score, String poster) {

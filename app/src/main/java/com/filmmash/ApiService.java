@@ -42,6 +42,7 @@ public class ApiService {
                     jsonResponse = response.toString();
                 } else {
                     System.out.println("GET request did not work");
+                    jsonResponse = null;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
