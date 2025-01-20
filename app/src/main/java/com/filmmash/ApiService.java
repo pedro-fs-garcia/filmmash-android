@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 public class ApiService {
 
-    private static final String BASE_URL = "http://34.202.101.207:5000";
+    private static final String BASE_URL = "http://3.216.238.233:5001";
 
     public interface JsonResponseCallback {
         void onResponse(String jsonResponse);

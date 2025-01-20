@@ -28,6 +28,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -108,44 +110,79 @@ class Page {
     @Composable
     fun Battle(arena: Arena, navController:NavController, modifier:Modifier = Modifier){
             Column(
-                verticalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
             ) {
                 Column {
                     Text(
                         text = "Yea, it's on...",
                         fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        fontSize = 12.sp
                     )
                     Text(
                         text = "...I like the idea of comparing two films together. It gives the whole thing a very \"Turing\" feel since people's ratings of the films will be more implicit than choosing a number to represent each film's quality like they do on IMDB.",
                         textAlign = TextAlign.Justify,
                         fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        fontSize = 12.sp,
+                        letterSpacing = 0.sp,
+                        lineHeight = 16.sp
                     )
                 }
 
                 MovieArena(arena = arena, navController)
-
+                Spacer(modifier = modifier.height(16.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(30.dp)
+                        .clickable { navController.navigate("battle") }
+                ){
+                    Text(
+                        text = "Reload",
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        modifier = modifier
+                            .fillMaxWidth()
+                    )
+                }
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = modifier
                         .fillMaxWidth()
                 ) {
-                    Text(
-                        text = "About us",
-                        fontFamily = FontFamily(Font(R.font.courier_prime)),
-                        fontWeight = FontWeight.Bold,
-                        modifier = modifier.clickable { navController.navigate("about") }
-                    )
-
-                    Text(
-                        text = "See all Ratings",
-                        fontFamily = FontFamily(Font(R.font.courier_prime)),
-                        fontWeight = FontWeight.Bold,
-                        modifier = modifier.clickable { navController.navigate("ratings") }
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = modifier
+                            .weight(1f)
+                            .height(30.dp)
+                            .clickable { navController.navigate("about") }
+                    ){
+                        Text(
+                            text = "About us",
+                            fontFamily = FontFamily(Font(R.font.courier_prime)),
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = modifier
+                            .weight(1f)
+                            .height(30.dp)
+                            .clickable { navController.navigate("ratings") }
+                    ){
+                        Text(
+                            text = "See all Ratings",
+                            fontFamily = FontFamily(Font(R.font.courier_prime)),
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
             }
     }
@@ -154,7 +191,7 @@ class Page {
     private fun MovieArena(arena: Arena, navController: NavController, modifier: Modifier = Modifier){
         Column {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -171,11 +208,14 @@ class Page {
                         fontWeight = FontWeight.Bold
                     )
                 }
+                Spacer(modifier = modifier.height(8.dp))
                 Text(
                     text = "Which is better? Click to choose...",
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(R.font.courier_prime))
+                    fontFamily = FontFamily(Font(R.font.courier_prime)),
+                    fontSize = 12.sp
                 )
+                Spacer(modifier = modifier.height(8.dp))
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -202,10 +242,6 @@ class Page {
                             .height(254.dp)
                             .width(173.dp)
                     )
-                    Text(
-                        text = arena.movie1.name,
-                        fontFamily = FontFamily(Font(R.font.courier_prime))
-                    )
                 }
                 Text(
                     text = "vs",
@@ -229,50 +265,99 @@ class Page {
                             .height(254.dp)
                             .width(173.dp)
                     )
+                }
+            }
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+            ){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = modifier
+                        .clickable(onClick = {
+                            arena.winner = arena.movie2.film_id
+                            val jsonWinner = arena.buildJsonWinner()
+                            ApiService().postNewWinner(jsonWinner)
+                            navController.navigate("battle")
+                        })
+                        .weight(1f)
+                        .padding(top=4.dp)
+                ){
                     Text(
-                        text = arena.movie2.name,
+                        text = "${arena.movie1.name}\n(${arena.movie1.year})",
                         fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        textAlign = TextAlign.Center,
+                        modifier = modifier
+                    )
+                }
+                Spacer(modifier = modifier.width(12.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = modifier
+                        .clickable(onClick = {
+                            arena.winner = arena.movie2.film_id
+                            val jsonWinner = arena.buildJsonWinner()
+                            ApiService().postNewWinner(jsonWinner)
+                            navController.navigate("battle")
+                        })
+                        .weight(1f)
+                        .padding(top=4.dp)
+                ){
+                    Text(
+                        text = "${arena.movie2.name}\n(${arena.movie2.year})",
+                        fontFamily = FontFamily(Font(R.font.courier_prime)),
+                        textAlign = TextAlign.Center,
+                        modifier = modifier
                     )
                 }
             }
-            Spacer(modifier = modifier.height(16.dp))
-            Text(
-                text = "Reload",
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Font(R.font.courier_prime)),
-                modifier = modifier
-                    .fillMaxWidth()
-                    .clickable { navController.navigate("battle") }
-            )
         }
     }
 
     @Composable
-    fun Ratings(ratingList: RatingList, modifier: Modifier = Modifier){
-        val listOfMovies = ratingList.movieList
+    fun Ratings(ratingList: RatingList?, modifier: Modifier = Modifier) {
+        val errorState = remember { mutableStateOf(false) }
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .fillMaxSize()
+                .padding(top = 16.dp)
         ) {
             Text(
                 text = "Movies listed by rating",
                 fontFamily = FontFamily(Font(R.font.courier_prime)),
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
+                fontSize = 24.sp,
+                lineHeight = 30.sp
             )
-            Spacer(modifier = modifier.height(10.dp))
-            LazyColumn(
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-            ) {
-                items(listOfMovies) { movie ->
-                    MovieCard(movie)
+            Spacer(modifier = Modifier.height(10.dp))
+
+            if (ratingList == null || errorState.value) {
+                // Exibe mensagem de erro
+                Text(
+                    text = "Failed to load movies. Please try again later.",
+                    color = Color.Red,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(16.dp)
+                )
+            } else {
+                // Renderiza a lista de filmes
+                LazyColumn(
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    items(ratingList.movieList) { movie ->
+                        MovieCard(movie)
+                    }
                 }
             }
         }
     }
+
 
     @Composable
     fun About(navController: NavController, modifier: Modifier = Modifier){
@@ -311,125 +396,128 @@ class Page {
             ){
                 Text(text = "Contribute on github")
             }
-            Button(
-                onClick = {navController.navigate("aboutAuthor")}
-            ){
-                Text(text = "About the author")
-            }
+//            Button(
+//                onClick = {navController.navigate("aboutAuthor")}
+//            ){
+//                Text(text = "About the author")
+//            }
         }
     }
 
     @Composable
-    fun EloScore() {
+    fun EloScore(modifier: Modifier = Modifier) {
         val scrollState = rememberScrollState()
-        Column(modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .padding(top = 50.dp)
-            .verticalScroll(scrollState)
-        ) {
+        Column(
+            modifier = modifier
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp, bottom = 16.dp)
+        ){
             Text(
                 text = "Elo Rating System",
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
+            Column(modifier = Modifier
+                .verticalScroll(scrollState)
+            ) {
+                Text(
+                    text = "The Elo rating system is a method for calculating the relative skill levels of players in two-player games, but it can also be adapted for various ranking scenarios, such as our movie ranking app. Here’s a breakdown of how the Elo system works:"
+                )
 
-            Text(
-                text = "The Elo rating system is a method for calculating the relative skill levels of players in two-player games, but it can also be adapted for various ranking scenarios, such as our movie ranking app. Here’s a breakdown of how the Elo system works:"
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Basics of the Elo System",
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                )
 
-            Text(
-                text = "Basics of the Elo System",
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-            )
+                Text(
+                    text = "1. Initial Ratings:\n" +
+                            "   - Every player (or film, in your case) starts with a predefined rating. In our case, it was set to 1400.\n"
+                )
 
-            Text(
-                text = "1. Initial Ratings:\n" +
-                        "   - Every player (or film, in your case) starts with a predefined rating. In our case, it was set to 1400.\n"
-            )
+                Text(
+                    text = "2. Rating Calculation:\n" +
+                            "   - The outcome of a match (or vote) between two players (or films) affects their ratings. The formula to calculate the new ratings is as follows:\n" +
+                            "\n" +
+                            "   R_a' = R_a + K × (S_a - E_a)\n" +
+                            "   R_b' = R_b + K × (S_b - E_b)\n" +
+                            "\n" +
+                            "   Where:\n" +
+                            "   - R_a and R_b are the current ratings of player A and player B, respectively.\n" +
+                            "   - R_a' and R_b' are the new ratings after the match.\n" +
+                            "   - K is a constant that determines how much the ratings can change after a match (often set between 10 and 40).\n" +
+                            "   - S_a and S_b are the actual scores of players A and B after the match (1 for a win, 0.5 for a draw, and 0 for a loss).\n" +
+                            "   - E_a and E_b are the expected scores, calculated based on the current ratings."
+                )
 
-            Text(
-                text = "2. Rating Calculation:\n" +
-                        "   - The outcome of a match (or vote) between two players (or films) affects their ratings. The formula to calculate the new ratings is as follows:\n" +
-                        "\n" +
-                        "   R_a' = R_a + K × (S_a - E_a)\n" +
-                        "   R_b' = R_b + K × (S_b - E_b)\n" +
-                        "\n" +
-                        "   Where:\n" +
-                        "   - R_a and R_b are the current ratings of player A and player B, respectively.\n" +
-                        "   - R_a' and R_b' are the new ratings after the match.\n" +
-                        "   - K is a constant that determines how much the ratings can change after a match (often set between 10 and 40).\n" +
-                        "   - S_a and S_b are the actual scores of players A and B after the match (1 for a win, 0.5 for a draw, and 0 for a loss).\n" +
-                        "   - E_a and E_b are the expected scores, calculated based on the current ratings."
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "3. Calculating Expected Scores:\n" +
+                            "   - The expected score for each player can be calculated using the following formula:\n" +
+                            "\n" +
+                            "   E_a = 1 / (1 + 10^{(R_b - R_a) / 400})\n" +
+                            "   E_b = 1 / (1 + 10^{(R_a - R_b) / 400})\n" +
+                            "\n" +
+                            "   This formula estimates the probability of a player winning based on their current ratings."
+                )
 
-            Text(
-                text = "3. Calculating Expected Scores:\n" +
-                        "   - The expected score for each player can be calculated using the following formula:\n" +
-                        "\n" +
-                        "   E_a = 1 / (1 + 10^{(R_b - R_a) / 400})\n" +
-                        "   E_b = 1 / (1 + 10^{(R_a - R_b) / 400})\n" +
-                        "\n" +
-                        "   This formula estimates the probability of a player winning based on their current ratings."
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Example Scenario",
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
 
-            Text(
-                text = "Example Scenario",
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+                Text(
+                    text = "1. Initial Ratings:\n" +
+                            "   - Film A: 1,600\n" +
+                            "   - Film B: 1,400\n"
+                )
 
-            Text(
-                text = "1. Initial Ratings:\n" +
-                        "   - Film A: 1,600\n" +
-                        "   - Film B: 1,400\n"
-            )
+                Text(
+                    text = "2. Vote Outcome:\n" +
+                            "   - Film A wins against Film B."
+                )
 
-            Text(
-                text = "2. Vote Outcome:\n" +
-                        "   - Film A wins against Film B."
-            )
+                Text(
+                    text = "3. Calculating Expected Scores:\n" +
+                            "   - E_A = 1 / (1 + 10^{(1400 - 1600) / 400}) = 0.76\n" +
+                            "   - E_B = 1 / (1 + 10^{(1600 - 1400) / 400}) = 0.24"
+                )
 
-            Text(
-                text = "3. Calculating Expected Scores:\n" +
-                        "   - E_A = 1 / (1 + 10^{(1400 - 1600) / 400}) = 0.76\n" +
-                        "   - E_B = 1 / (1 + 10^{(1600 - 1400) / 400}) = 0.24"
-            )
+                Text(
+                    text = "4. Updating Ratings:\n" +
+                            "   - If K = 32:\n" +
+                            "   - For Film A (winner):\n" +
+                            "     R_a' = 1600 + 32 × (1 - 0.76) ≈ 1608\n" +
+                            "   - For Film B (loser):\n" +
+                            "     R_b' = 1400 + 32 × (0 - 0.24) ≈ 1392"
+                )
 
-            Text(
-                text = "4. Updating Ratings:\n" +
-                        "   - If K = 32:\n" +
-                        "   - For Film A (winner):\n" +
-                        "     R_a' = 1600 + 32 × (1 - 0.76) ≈ 1608\n" +
-                        "   - For Film B (loser):\n" +
-                        "     R_b' = 1400 + 32 × (0 - 0.24) ≈ 1392"
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Key Points",
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
 
-            Text(
-                text = "Key Points",
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+                Text(
+                    text = "- Dynamic Ratings: Ratings change based on performance against other films, allowing for a more accurate representation of a film's popularity over time.\n" +
+                            "- Lesser-Known Films: The Elo system allows lesser-known films to gain ratings quickly if they perform well against more popular films, promoting diversity in rankings.\n" +
+                            "- Simplicity: While the formulas may seem complex, the system is relatively straightforward to implement and can be adapted to various contexts beyond gaming."
+                )
 
-            Text(
-                text = "- Dynamic Ratings: Ratings change based on performance against other films, allowing for a more accurate representation of a film's popularity over time.\n" +
-                        "- Lesser-Known Films: The Elo system allows lesser-known films to gain ratings quickly if they perform well against more popular films, promoting diversity in rankings.\n" +
-                        "- Simplicity: While the formulas may seem complex, the system is relatively straightforward to implement and can be adapted to various contexts beyond gaming."
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "By implementing the Elo rating system in your Filmmash app, you can create a dynamic ranking mechanism that reflects the preferences and choices of your users in an engaging way!"
-            )
+                Text(
+                    text = "By implementing the Elo rating system in our Filmmash app, we can create a dynamic ranking mechanism that reflects the preferences and choices of our users in an engaging way!"
+                )
+            }
         }
     }
 
@@ -474,8 +562,9 @@ class Page {
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = modifier.fillMaxHeight()
             ){
+
                 Text (
-                    text = movie.name,
+                    text = "${movie.name}\n\n${movie.year}",
                     fontSize = 20.sp,
                     color = Color.Black
                 )
@@ -492,66 +581,6 @@ class Page {
         Spacer(modifier = modifier.height(16.dp))
     }
 
-    @Composable
-    fun DrawerContent(drawerState: DrawerState, scope: CoroutineScope, navController: NavController, modifier:Modifier = Modifier) {
-        Column(
-            modifier = modifier
-                .background(shape = RectangleShape, color=MaterialTheme.colorScheme.onBackground)
-                .fillMaxHeight()
-                .width(200.dp)
-        ) {
-            IconButton(
-                onClick = {scope.launch { drawerState.close() }},
-            ) {
-                Icon(Icons.Filled.Menu, tint = Color.White, contentDescription = "menu", modifier = modifier.fillMaxSize().padding(0.dp))
-            }
-            Text(
-                text = "Home",
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clickable {
-                        navController.navigate("home")
-                        scope.launch { drawerState.close() }
-                    }
-            )
-            Text(
-                text = "Filmmash",
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clickable {
-                        navController.navigate("battle")
-                        scope.launch { drawerState.close() }
-                    }
-            )
-            Text(
-                text = "Ratings",
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clickable {
-                        navController.navigate("ratings")
-                        scope.launch{drawerState.close()}
-                    }
-
-            )
-            Text(
-                text = "About us",
-                color = Color.White,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clickable {
-                        navController.navigate("about")
-                        scope.launch { drawerState.close() }
-                    }
-            )
-        }
-    }
 
     @Preview(showBackground = true)
     @Composable

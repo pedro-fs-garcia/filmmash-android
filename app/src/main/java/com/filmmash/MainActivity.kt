@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +52,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.filmmash.ui.components.MenuComponents
 import com.filmmash.ui.theme.FilmmashTheme
 import kotlinx.coroutines.launch
 
@@ -129,6 +131,7 @@ fun PageBuilder(){
                 .padding(
                     start = WindowInsets.safeDrawing.asPaddingValues().calculateStartPadding(layoutDirection),
                     end = WindowInsets.safeDrawing.asPaddingValues().calculateEndPadding(layoutDirection),
+                    bottom = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding()
                 )
                 .statusBarsPadding()
         ){
@@ -141,9 +144,9 @@ fun PageBuilder(){
                 modifier = modifier
                     .fillMaxHeight(),
                 drawerContent = {
-                    pages.DrawerContent(drawerState, scope, navController)
+                    MenuComponents().DrawerContent(drawerState, scope, navController)
                 },
-                scrimColor = Color.LightGray.copy(alpha = 0f),
+                scrimColor = Color.LightGray.copy(alpha = 0.5f),
                 drawerState = drawerState,
                 content = {
                     Surface(
@@ -158,7 +161,7 @@ fun PageBuilder(){
                                 modifier = modifier
                                     .fillMaxWidth()
                                     .height(50.dp)
-                                    .padding(end = 16.dp)
+                                    .padding(top = 16.dp,end = 16.dp)
                             ){
                                 IconButton(
                                     onClick = { scope.launch{drawerState.open()} },
